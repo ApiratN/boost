@@ -54,11 +54,11 @@ class ClaudeCode extends Agent implements SupportsGuidelines, SupportsMcp, Suppo
 
     public function guidelinesPath(): string
     {
-        return config('boost.agents.claude_code.guidelines_path', 'CLAUDE.md');
+        return config('boost.agents.claude_code.guidelines_path') ?? 'CLAUDE.md';
     }
 
     public function skillsPath(): string
     {
-        return config('boost.agents.claude_code.skills_path', '.claude/skills');
+        return config('boost.agents.claude_code.skills_path') ?? '.claude/skills';
     }
 }

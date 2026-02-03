@@ -64,11 +64,11 @@ class Copilot extends Agent implements SupportsGuidelines, SupportsMcp, Supports
 
     public function guidelinesPath(): string
     {
-        return config('boost.agents.copilot.guidelines_path', '.github/copilot-instructions.md');
+        return config('boost.agents.copilot.guidelines_path') ?? '.github/copilot-instructions.md';
     }
 
     public function skillsPath(): string
     {
-        return config('boost.agents.copilot.skills_path', '.github/skills');
+        return config('boost.agents.copilot.skills_path') ?? '.github/skills';
     }
 }

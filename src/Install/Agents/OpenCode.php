@@ -53,7 +53,7 @@ class OpenCode extends Agent implements SupportsGuidelines, SupportsMcp, Support
 
     public function guidelinesPath(): string
     {
-        return config('boost.agents.opencode.guidelines_path', 'AGENTS.md');
+        return config('boost.agents.opencode.guidelines_path') ?? 'AGENTS.md';
     }
 
     public function mcpConfigKey(): string
@@ -82,6 +82,6 @@ class OpenCode extends Agent implements SupportsGuidelines, SupportsMcp, Support
 
     public function skillsPath(): string
     {
-        return config('boost.agents.opencode.skills_path', '.opencode/skills');
+        return config('boost.agents.opencode.skills_path') ?? '.opencode/skills';
     }
 }
