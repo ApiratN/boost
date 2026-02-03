@@ -98,7 +98,7 @@ test('kilo code returns correct guidelines path with default config', function (
 
     $agent = new KiloCode($this->strategyFactory);
 
-    expect($agent->guidelinesPath())->toBe('.kilocode/rules/AGENTS.md');
+    expect($agent->guidelinesPath())->toBe('.kilocode/rules');
 });
 
 test('kilo code returns correct guidelines path with custom config', function (): void {

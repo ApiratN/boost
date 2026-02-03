@@ -54,7 +54,7 @@ class KiloCode extends Agent implements SupportsGuidelines, SupportsMcp, Support
 
     public function guidelinesPath(): string
     {
-        return config('boost.agents.kilo_code.guidelines_path') ?? '.kilocode/rules/AGENTS.md';
+        return config('boost.agents.kilo_code.guidelines_path') ?? '.kilocode/rules';
     }
 
     public function skillsPath(): string
