@@ -1,16 +1,16 @@
 {
-    "name": "laravel/boost",
+    "name": "apiratn/boost",
     "description": "Laravel Boost accelerates AI-assisted development by providing the essential context and structure that AI needs to generate high-quality, Laravel-specific code.",
     "keywords": [
         "dev",
         "laravel",
         "ai"
     ],
-    "homepage": "https://github.com/laravel/boost",
+    "homepage": "https://github.com/ApiratN/boost",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/laravel/boost/issues",
-        "source": "https://github.com/laravel/boost"
+        "issues": "https://github.com/ApiratN/boost/issues",
+        "source": "https://github.com/ApiratN/boost"
     },
     "require": {
         "php": "^8.0",
