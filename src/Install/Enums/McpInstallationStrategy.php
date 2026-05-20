@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Laravel\Boost\Install\Enums;
 
-enum McpInstallationStrategy: string
+class McpInstallationStrategy
 {
-    case SHELL = 'shell';
-    case FILE = 'file';
-    case NONE = 'none';
+    public const SHELL = 'shell';
+    public const FILE = 'file';
+    public const NONE = 'none';
 }

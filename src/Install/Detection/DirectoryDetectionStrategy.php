@@ -9,7 +9,7 @@ use Laravel\Boost\Install\Enums\Platform;
 
 class DirectoryDetectionStrategy implements DetectionStrategy
 {
-    public function detect(array $config, ?Platform $platform = null): bool
+    public function detect(array $config, ?string $platform = null): bool
     {
         if (! isset($config['paths'])) {
             return false;
@@ -39,9 +39,9 @@ class DirectoryDetectionStrategy implements DetectionStrategy
         return false;
     }
 
-    protected function expandPath(string $path, ?Platform $platform = null): string
+    protected function expandPath(string $path, ?string $platform = null): string
     {
-        if ($platform === Platform::Windows) {
+        if ($platform === Platform::WINDOWS) {
             return preg_replace_callback('/%([^%]+)%/', fn (array $matches) => getenv($matches[1]) ?: $matches[0], $path);
         }
 

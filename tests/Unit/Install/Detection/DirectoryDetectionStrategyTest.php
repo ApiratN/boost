@@ -160,7 +160,7 @@ test('expands windows environment variables', function (): void {
     try {
         $result = $this->strategy->detect([
             'paths' => ['%TESTVAR%/windows_test'],
-        ], Platform::Windows);
+        ], Platform::WINDOWS);
 
         expect($result)->toBeTrue();
     } finally {
@@ -171,7 +171,7 @@ test('expands windows environment variables', function (): void {
 test('handles missing environment variable on windows', function (): void {
     $result = $this->strategy->detect([
         'paths' => ['%NONEXISTENT%/test'],
-    ], Platform::Windows);
+    ], Platform::WINDOWS);
 
     expect($result)->toBeFalse();
 });

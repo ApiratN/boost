@@ -47,7 +47,7 @@ class AddSkillCommand extends Command
 
     protected string $defaultSkillsPath = '.ai/skills';
 
-    public function __construct(private readonly Terminal $terminal)
+    public function __construct(private Terminal $terminal)
     {
         parent::__construct();
     }

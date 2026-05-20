@@ -10,7 +10,7 @@ use Laravel\Boost\Install\Enums\Platform;
 
 class CommandDetectionStrategy implements DetectionStrategy
 {
-    public function detect(array $config, ?Platform $platform = null): bool
+    public function detect(array $config, ?string $platform = null): bool
     {
         if (! isset($config['command'])) {
             return false;

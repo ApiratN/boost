@@ -43,15 +43,15 @@ it('returns collection of all registered agents', function (): void {
 
 it('returns an array of detected agents names for system discovery', function (): void {
     $mockJunie = Mockery::mock(Agent::class);
-    $mockJunie->shouldReceive('detectOnSystem')->with(Mockery::type(Platform::class))->andReturn(true);
+    $mockJunie->shouldReceive('detectOnSystem')->with(Mockery::type('string'))->andReturn(true);
     $mockJunie->shouldReceive('name')->andReturn('junie');
 
     $mockCursor = Mockery::mock(Agent::class);
-    $mockCursor->shouldReceive('detectOnSystem')->with(Mockery::type(Platform::class))->andReturn(true);
+    $mockCursor->shouldReceive('detectOnSystem')->with(Mockery::type('string'))->andReturn(true);
     $mockCursor->shouldReceive('name')->andReturn('cursor');
 
     $mockOther = Mockery::mock(Agent::class);
-    $mockOther->shouldReceive('detectOnSystem')->with(Mockery::type(Platform::class))->andReturn(false);
+    $mockOther->shouldReceive('detectOnSystem')->with(Mockery::type('string'))->andReturn(false);
     $mockOther->shouldReceive('name')->andReturn('other');
 
     $this->container->bind(Junie::class, fn () => $mockJunie);
@@ -71,7 +71,7 @@ it('returns an array of detected agents names for system discovery', function ()
 
 it('returns an empty array when no agents are detected for system discovery', function (): void {
     $mockAgent = Mockery::mock(Agent::class);
-    $mockAgent->shouldReceive('detectOnSystem')->with(Mockery::type(Platform::class))->andReturn(false);
+    $mockAgent->shouldReceive('detectOnSystem')->with(Mockery::type('string'))->andReturn(false);
     $mockAgent->shouldReceive('name')->andReturn('mock');
 
     $this->container->bind(Junie::class, fn () => $mockAgent);

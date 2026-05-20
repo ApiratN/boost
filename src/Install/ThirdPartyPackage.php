@@ -9,12 +9,15 @@ use Laravel\Boost\Support\Composer;
 
 class ThirdPartyPackage
 {
-    public function __construct(
-        public readonly string $name,
-        public readonly bool $hasGuidelines,
-        public readonly bool $hasSkills,
-    ) {
-        //
+    public string $name;
+    public bool $hasGuidelines;
+    public bool $hasSkills;
+
+    public function __construct(string $name, bool $hasGuidelines, bool $hasSkills)
+    {
+        $this->name = $name;
+        $this->hasGuidelines = $hasGuidelines;
+        $this->hasSkills = $hasSkills;
     }
 
     /**
@@ -33,23 +36,32 @@ class ThirdPartyPackage
         ));
 
         return collect($allPackageNames)
-            ->mapWithKeys(fn (string $name): array => [
-                $name => new self(
-                    name: $name,
-                    hasGuidelines: isset($withGuidelines[$name]),
-                    hasSkills: isset($withSkills[$name]),
-                ),
-            ]);
+            ->mapWithKeys(function (string $name): array {
+                return [
+                    $name => new self(
+                        $name,
+                        isset($withGuidelines[$name]),
+                        isset($withSkills[$name])
+                    ),
+                ];
+            });
     }
 
     public function featureLabel(): string
     {
-        return match (true) {
-            $this->hasGuidelines && $this->hasSkills => 'guidelines, skills',
-            $this->hasGuidelines => 'guideline',
-            $this->hasSkills => 'skills',
-            default => '',
-        };
+        if ($this->hasGuidelines && $this->hasSkills) {
+            return 'guidelines, skills';
+        }
+
+        if ($this->hasGuidelines) {
+            return 'guideline';
+        }
+
+        if ($this->hasSkills) {
+            return 'skills';
+        }
+
+        return '';
     }
 
     public function displayLabel(): string

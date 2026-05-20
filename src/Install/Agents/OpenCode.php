@@ -22,16 +22,21 @@ class OpenCode extends Agent implements SupportsGuidelines, SupportsMcp, Support
         return 'OpenCode';
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
-        return match ($platform) {
-            Platform::Darwin, Platform::Linux => [
-                'command' => 'command -v opencode',
-            ],
-            Platform::Windows => [
-                'command' => 'where opencode 2>nul',
-            ],
-        };
+        switch ($platform) {
+            case Platform::DARWIN:
+            case Platform::LINUX:
+                return [
+                    'command' => 'command -v opencode',
+                ];
+            case Platform::WINDOWS:
+                return [
+                    'command' => 'where opencode 2>nul',
+                ];
+            default:
+                return [];
+        }
     }
 
     public function projectDetectionConfig(): array
@@ -41,7 +46,7 @@ class OpenCode extends Agent implements SupportsGuidelines, SupportsMcp, Support
         ];
     }
 
-    public function mcpInstallationStrategy(): McpInstallationStrategy
+    public function mcpInstallationStrategy(): string
     {
         return McpInstallationStrategy::FILE;
     }
@@ -75,7 +80,7 @@ class OpenCode extends Agent implements SupportsGuidelines, SupportsMcp, Support
         return [
             'type' => 'local',
             'enabled' => true,
-            'command' => [$command, ...$args],
+            'command' => array_merge([$command], $args),
             'environment' => $env,
         ];
     }

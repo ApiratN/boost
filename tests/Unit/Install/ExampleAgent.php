@@ -21,7 +21,7 @@ class ExampleAgent extends Agent implements SupportsGuidelines, SupportsMcp
         return 'Example IDE';
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
         return ['command' => 'which example'];
     }

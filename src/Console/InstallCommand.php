@@ -66,11 +66,11 @@ class InstallCommand extends Command
     const MIN_TEST_COUNT = 6;
 
     public function __construct(
-        private readonly AgentsDetector $agentsDetector,
-        private readonly Config $config,
-        private readonly Herd $herd,
-        private readonly Sail $sail,
-        private readonly Terminal $terminal
+        private AgentsDetector $agentsDetector,
+        private Config $config,
+        private Herd $herd,
+        private Sail $sail,
+        private Terminal $terminal
     ) {
         parent::__construct();
     }
@@ -338,7 +338,7 @@ class InstallCommand extends Command
             emptyMessage: 'No agents are selected for guideline installation.',
             headerMessage: sprintf('Adding %d guidelines to your selected agents', $guidelines->count()),
             nameResolver: fn (Agent $agent): string => $agent->displayName(),
-            processor: fn (Agent&SupportsGuidelines $agent): int => (new GuidelineWriter($agent))->write($composedAiGuidelines),
+            processor: function (Agent $agent) use ($composedAiGuidelines): int { return (new GuidelineWriter($agent))->write($composedAiGuidelines); },
             featureName: 'guidelines',
             beforeProcess: fn () => grid($guidelines->map(fn ($guideline, string $key): string => $key.($guideline['custom'] ? '*' : ''))->sort()->values()->toArray()),
             withDelay: true,
@@ -358,8 +358,8 @@ class InstallCommand extends Command
             agents: $skillsAgents,
             emptyMessage: 'No agents are selected for skill installation.',
             headerMessage: sprintf('Syncing %d skills for skills-capable agents', $skills->count()),
-            nameResolver: fn (SupportsSkills&Agent $agent): string => $agent->displayName(),
-            processor: fn (SupportsSkills&Agent $agent): array => (new SkillWriter($agent))->sync($skills, $this->config->getSkills()),
+            nameResolver: function (Agent $agent): string { return $agent->displayName(); },
+            processor: function (Agent $agent) use ($skills): array { return (new SkillWriter($agent))->sync($skills, $this->config->getSkills()); },
             featureName: 'skills',
             beforeProcess: $skills->isNotEmpty()
                 ? fn () => grid($skills->map(fn (Skill $skill): string => $skill->displayName())->sort()->values()->toArray())
@@ -439,10 +439,10 @@ class InstallCommand extends Command
             emptyMessage: 'No agents are selected for MCP installation.',
             headerMessage: 'Installing MCP servers to your selected Agents',
             nameResolver: fn (Agent $agent): string => $agent->displayName(),
-            processor: fn (Agent&SupportsMcp $agent): int => (new McpWriter($agent))->write(
+            processor: function (Agent $agent): int { return (new McpWriter($agent))->write(
                 $this->shouldUseSail() ? $this->sail : null,
                 $this->shouldInstallHerdMcp() ? $this->herd : null
-            ),
+            ); },
             featureName: 'MCP servers',
             withDelay: true,
         );

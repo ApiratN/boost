@@ -7,6 +7,27 @@ use Laravel\Boost\Install\Herd;
 use Laravel\Boost\Install\McpWriter;
 use Laravel\Boost\Install\Sail;
 
+beforeEach(function (): void {
+    // Clear WSL environment variables so isRunningInsideWsl() returns false
+    putenv('WSL_DISTRO_NAME');
+    putenv('IS_WSL');
+});
+
+afterEach(function (): void {
+    // Restore original WSL environment variables
+    $originalDistro = $_SERVER['WSL_DISTRO_NAME_ORIG'] ?? null;
+    $originalIswsl = $_SERVER['IS_WSL_ORIG'] ?? null;
+
+    if ($originalDistro !== null) {
+        putenv("WSL_DISTRO_NAME={$originalDistro}");
+    }
+    if ($originalIswsl !== null) {
+        putenv("IS_WSL={$originalIswsl}");
+    }
+
+    Mockery::close();
+});
+
 it('installs boost mcp successfully without sail', function (): void {
     $agent = Mockery::mock(SupportsMcp::class);
     $agent->shouldReceive('getPhpPath')

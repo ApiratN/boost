@@ -22,16 +22,21 @@ class ClaudeCode extends Agent implements SupportsGuidelines, SupportsMcp, Suppo
         return 'Claude Code';
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
-        return match ($platform) {
-            Platform::Darwin, Platform::Linux => [
-                'command' => 'command -v claude',
-            ],
-            Platform::Windows => [
-                'command' => 'where claude 2>nul',
-            ],
-        };
+        switch ($platform) {
+            case Platform::DARWIN:
+            case Platform::LINUX:
+                return [
+                    'command' => 'command -v claude',
+                ];
+            case Platform::WINDOWS:
+                return [
+                    'command' => 'where claude 2>nul',
+                ];
+            default:
+                return [];
+        }
     }
 
     public function projectDetectionConfig(): array
@@ -42,7 +47,7 @@ class ClaudeCode extends Agent implements SupportsGuidelines, SupportsMcp, Suppo
         ];
     }
 
-    public function mcpInstallationStrategy(): McpInstallationStrategy
+    public function mcpInstallationStrategy(): string
     {
         return McpInstallationStrategy::FILE;
     }

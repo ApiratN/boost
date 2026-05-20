@@ -26,28 +26,33 @@ class Junie extends Agent implements SupportsGuidelines, SupportsMcp, SupportsSk
         return true;
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
-        return match ($platform) {
-            Platform::Darwin => [
-                'paths' => ['/Applications/PhpStorm.app'],
-            ],
-            Platform::Linux => [
-                'paths' => [
-                    '/opt/phpstorm',
-                    '/opt/PhpStorm*',
-                    '/usr/local/bin/phpstorm',
-                    '~/.local/share/JetBrains/Toolbox/apps/PhpStorm/ch-*',
-                ],
-            ],
-            Platform::Windows => [
-                'paths' => [
-                    '%ProgramFiles%\\JetBrains\\PhpStorm*',
-                    '%LOCALAPPDATA%\\JetBrains\\Toolbox\\apps\\PhpStorm\\ch-*',
-                    '%LOCALAPPDATA%\\Programs\\PhpStorm',
-                ],
-            ],
-        };
+        switch ($platform) {
+            case Platform::DARWIN:
+                return [
+                    'paths' => ['/Applications/PhpStorm.app'],
+                ];
+            case Platform::LINUX:
+                return [
+                    'paths' => [
+                        '/opt/phpstorm',
+                        '/opt/PhpStorm*',
+                        '/usr/local/bin/phpstorm',
+                        '~/.local/share/JetBrains/Toolbox/apps/PhpStorm/ch-*',
+                    ],
+                ];
+            case Platform::WINDOWS:
+                return [
+                    'paths' => [
+                        '%ProgramFiles%\\JetBrains\\PhpStorm*',
+                        '%LOCALAPPDATA%\\JetBrains\\Toolbox\\apps\\PhpStorm\\ch-*',
+                        '%LOCALAPPDATA%\\Programs\\PhpStorm',
+                    ],
+                ];
+            default:
+                return [];
+        }
     }
 
     public function projectDetectionConfig(): array

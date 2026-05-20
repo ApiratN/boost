@@ -21,16 +21,21 @@ class Gemini extends Agent implements SupportsGuidelines, SupportsMcp, SupportsS
         return 'Gemini CLI';
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
-        return match ($platform) {
-            Platform::Darwin, Platform::Linux => [
-                'command' => 'command -v gemini',
-            ],
-            Platform::Windows => [
-                'command' => 'where gemini 2>nul',
-            ],
-        };
+        switch ($platform) {
+            case Platform::DARWIN:
+            case Platform::LINUX:
+                return [
+                    'command' => 'command -v gemini',
+                ];
+            case Platform::WINDOWS:
+                return [
+                    'command' => 'where gemini 2>nul',
+                ];
+            default:
+                return [];
+        }
     }
 
     public function projectDetectionConfig(): array

@@ -16,9 +16,11 @@ class DetectionStrategyFactory
 
     private const TYPE_FILE = 'file';
 
-    public function __construct(private readonly Container $container)
+    private Container $container;
+
+    public function __construct(Container $container)
     {
-        //
+        $this->container = $container;
     }
 
     public function make(string|array $type, array $config = []): DetectionStrategy
@@ -29,12 +31,16 @@ class DetectionStrategyFactory
             );
         }
 
-        return match ($type) {
-            self::TYPE_DIRECTORY => $this->container->make(DirectoryDetectionStrategy::class),
-            self::TYPE_COMMAND => $this->container->make(CommandDetectionStrategy::class),
-            self::TYPE_FILE => $this->container->make(FileDetectionStrategy::class),
-            default => throw new InvalidArgumentException("Unknown detection type: {$type}"),
-        };
+        switch ($type) {
+            case self::TYPE_DIRECTORY:
+                return $this->container->make(DirectoryDetectionStrategy::class);
+            case self::TYPE_COMMAND:
+                return $this->container->make(CommandDetectionStrategy::class);
+            case self::TYPE_FILE:
+                return $this->container->make(FileDetectionStrategy::class);
+            default:
+                throw new InvalidArgumentException("Unknown detection type: {$type}");
+        }
     }
 
     public function makeFromConfig(array $config): DetectionStrategy

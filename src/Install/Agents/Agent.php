@@ -13,7 +13,7 @@ use Laravel\Boost\Install\Mcp\FileWriter;
 
 abstract class Agent
 {
-    public function __construct(protected readonly DetectionStrategyFactory $strategyFactory)
+    public function __construct(protected DetectionStrategyFactory $strategyFactory)
     {
         //
     }
@@ -42,7 +42,7 @@ abstract class Agent
      *
      * @return array{paths?: string[], command?: string, files?: string[]}
      */
-    abstract public function systemDetectionConfig(Platform $platform): array;
+    abstract public function systemDetectionConfig(string $platform): array;
 
     /**
      * Get the detection configuration for project-specific detection.
@@ -51,7 +51,7 @@ abstract class Agent
      */
     abstract public function projectDetectionConfig(): array;
 
-    public function detectOnSystem(Platform $platform): bool
+    public function detectOnSystem(string $platform): bool
     {
         $config = $this->systemDetectionConfig($platform);
         $strategy = $this->strategyFactory->makeFromConfig($config);
@@ -67,7 +67,7 @@ abstract class Agent
         return $strategy->detect($config);
     }
 
-    public function mcpInstallationStrategy(): McpInstallationStrategy
+    public function mcpInstallationStrategy(): string
     {
         return McpInstallationStrategy::FILE;
     }
@@ -123,11 +123,17 @@ abstract class Agent
      */
     public function installMcp(string $key, string $command, array $args = [], array $env = []): bool
     {
-        return match ($this->mcpInstallationStrategy()) {
-            McpInstallationStrategy::SHELL => $this->installShellMcp($key, $command, $args, $env),
-            McpInstallationStrategy::FILE => $this->installFileMcp($key, $command, $args, $env),
-            McpInstallationStrategy::NONE => false
-        };
+        $strategy = $this->mcpInstallationStrategy();
+
+        switch ($strategy) {
+            case McpInstallationStrategy::SHELL:
+                return $this->installShellMcp($key, $command, $args, $env);
+            case McpInstallationStrategy::FILE:
+                return $this->installFileMcp($key, $command, $args, $env);
+            case McpInstallationStrategy::NONE:
+            default:
+                return false;
+        }
     }
 
     /**
@@ -177,7 +183,9 @@ abstract class Agent
         ], [
             $key,
             $command,
-            implode(' ', array_map(fn (string $arg): string => '"'.$arg.'"', $args)),
+            implode(' ', array_map(function (string $arg): string {
+                return '"' . $arg . '"';
+            }, $args)),
             trim($envString),
         ], $shellCommand);
 

@@ -46,6 +46,6 @@ class Herd
 
     public function isWindowsPlatform(): bool
     {
-        return Platform::current() === Platform::Windows;
+        return Platform::current() === Platform::WINDOWS;
     }
 }

@@ -22,16 +22,21 @@ class Codex extends Agent implements SupportsGuidelines, SupportsMcp, SupportsSk
         return 'Codex';
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
-        return match ($platform) {
-            Platform::Darwin, Platform::Linux => [
-                'command' => 'which codex',
-            ],
-            Platform::Windows => [
-                'command' => 'where codex 2>nul',
-            ],
-        };
+        switch ($platform) {
+            case Platform::DARWIN:
+            case Platform::LINUX:
+                return [
+                    'command' => 'which codex',
+                ];
+            case Platform::WINDOWS:
+                return [
+                    'command' => 'where codex 2>nul',
+                ];
+            default:
+                return [];
+        }
     }
 
     public function projectDetectionConfig(): array
@@ -47,7 +52,7 @@ class Codex extends Agent implements SupportsGuidelines, SupportsMcp, SupportsSk
         return config('boost.agents.codex.guidelines_path') ?? 'AGENTS.md';
     }
 
-    public function mcpInstallationStrategy(): McpInstallationStrategy
+    public function mcpInstallationStrategy(): string
     {
         return McpInstallationStrategy::SHELL;
     }

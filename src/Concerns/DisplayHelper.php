@@ -13,14 +13,14 @@ trait DisplayHelper
 {
     use Colors;
 
-    protected ?Theme $theme = null;
+    protected ?string $theme = null;
 
-    protected function initTheme(?Theme $theme = null): void
+    protected function initTheme(?string $theme = null): void
     {
         $this->theme = $theme ?? Theme::random();
     }
 
-    protected function displayBoostHeader(string $featureName, string $projectName, ?Theme $theme = null): void
+    protected function displayBoostHeader(string $featureName, string $projectName, ?string $theme = null): void
     {
         $this->initTheme($theme);
 
@@ -40,7 +40,7 @@ trait DisplayHelper
             '╚═════╝   ╚═════╝   ╚═════╝  ╚══════╝    ╚═╝   ',
         ];
 
-        $gradient = $this->theme->gradient();
+        $gradient = Theme::gradient($this->theme);
 
         $this->newLine();
 
@@ -69,8 +69,10 @@ trait DisplayHelper
         $paddingLength = (int) (floor(($terminalWidth - $visualWidth) / 2)) - 2;
         $padding = str_repeat(' ', max(0, $paddingLength));
 
+        $primary = Theme::primary($this->theme);
+
         $this->output->writeln(
-            "\e[48;5;{$this->theme->primary()}m\033[2K{$padding}\e[30m\e[1m{$text}{$link}\e[0m"
+            "\e[48;5;{$primary}m\033[2K{$padding}\e[30m\e[1m{$text}{$link}\e[0m"
         );
         $this->newLine();
     }
@@ -82,7 +84,9 @@ trait DisplayHelper
 
     protected function displayBadge(string $text): string
     {
-        return "\e[48;5;{$this->theme->primary()}m\e[30m\e[1m{$text}\e[0m";
+        $primary = Theme::primary($this->theme);
+
+        return "\e[48;5;{$primary}m\e[30m\e[1m{$text}\e[0m";
     }
 
     protected function hyperlink(string $label, string $url): string

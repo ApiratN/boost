@@ -73,7 +73,7 @@ test('works with different platforms parameter', function (): void {
 
     $result = $this->strategy->detect([
         'command' => 'where code',
-    ], Platform::Windows);
+    ], Platform::WINDOWS);
 
     expect($result)->toBeTrue();
 })->skip();

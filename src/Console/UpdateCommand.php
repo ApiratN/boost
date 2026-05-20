@@ -6,11 +6,13 @@ namespace Laravel\Boost\Console;
 
 use Illuminate\Console\Command;
 use Laravel\Boost\Support\Config;
-use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand('boost:update', 'Update the Laravel Boost guidelines & skills to the latest guidance')]
 class UpdateCommand extends Command
 {
+    protected $name = 'boost:update';
+
+    protected $description = 'Update the Laravel Boost guidelines & skills to the latest guidance';
+
     public function handle(Config $config): int
     {
         if (! $config->isValid() || empty($config->getAgents())) {

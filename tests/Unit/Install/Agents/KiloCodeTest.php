@@ -49,7 +49,7 @@ test('kilo code implements supports skills interface', function (): void {
 test('kilo code returns correct system detection config for darwin', function (): void {
     $agent = new KiloCode($this->strategyFactory);
 
-    $config = $agent->systemDetectionConfig(Platform::Darwin);
+    $config = $agent->systemDetectionConfig(Platform::DARWIN);
 
     expect($config)->toBe([
         'command' => 'command -v kilo-code 2>/dev/null',
@@ -59,7 +59,7 @@ test('kilo code returns correct system detection config for darwin', function ()
 test('kilo code returns correct system detection config for linux', function (): void {
     $agent = new KiloCode($this->strategyFactory);
 
-    $config = $agent->systemDetectionConfig(Platform::Linux);
+    $config = $agent->systemDetectionConfig(Platform::LINUX);
 
     expect($config)->toBe([
         'command' => 'command -v kilo-code 2>/dev/null',
@@ -69,7 +69,7 @@ test('kilo code returns correct system detection config for linux', function ():
 test('kilo code returns correct system detection config for windows', function (): void {
     $agent = new KiloCode($this->strategyFactory);
 
-    $config = $agent->systemDetectionConfig(Platform::Windows);
+    $config = $agent->systemDetectionConfig(Platform::WINDOWS);
 
     expect($config)->toBe([
         'command' => 'where kilo-code 2>nul',

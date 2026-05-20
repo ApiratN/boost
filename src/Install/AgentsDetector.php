@@ -13,8 +13,8 @@ use Laravel\Boost\Install\Enums\Platform;
 class AgentsDetector
 {
     public function __construct(
-        private readonly Container $container,
-        private readonly BoostManager $boostManager
+        private Container $container,
+        private BoostManager $boostManager
     ) {}
 
     /**

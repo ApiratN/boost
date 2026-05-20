@@ -21,26 +21,31 @@ class Cursor extends Agent implements SupportsGuidelines, SupportsMcp, SupportsS
         return 'Cursor';
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
-        return match ($platform) {
-            Platform::Darwin => [
-                'paths' => ['/Applications/Cursor.app'],
-            ],
-            Platform::Linux => [
-                'paths' => [
-                    '/opt/cursor',
-                    '/usr/local/bin/cursor',
-                    '~/.local/bin/cursor',
-                ],
-            ],
-            Platform::Windows => [
-                'paths' => [
-                    '%ProgramFiles%\\Cursor',
-                    '%LOCALAPPDATA%\\Programs\\Cursor',
-                ],
-            ],
-        };
+        switch ($platform) {
+            case Platform::DARWIN:
+                return [
+                    'paths' => ['/Applications/Cursor.app'],
+                ];
+            case Platform::LINUX:
+                return [
+                    'paths' => [
+                        '/opt/cursor',
+                        '/usr/local/bin/cursor',
+                        '~/.local/bin/cursor',
+                    ],
+                ];
+            case Platform::WINDOWS:
+                return [
+                    'paths' => [
+                        '%ProgramFiles%\\Cursor',
+                        '%LOCALAPPDATA%\\Programs\\Cursor',
+                    ],
+                ];
+            default:
+                return [];
+        }
     }
 
     public function projectDetectionConfig(): array

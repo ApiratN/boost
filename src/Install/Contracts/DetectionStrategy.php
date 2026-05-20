@@ -13,5 +13,5 @@ interface DetectionStrategy
      *
      * @param  array{command?:string, basePath?:string, files?:array<string>, paths?:array<string>}  $config
      */
-    public function detect(array $config, ?Platform $platform = null): bool;
+    public function detect(array $config, ?string $platform = null): bool;
 }

@@ -20,9 +20,13 @@ class SkillComposer
     /** @var Collection<string, Skill>|null */
     protected ?Collection $skills = null;
 
-    public function __construct(protected Roster $roster, protected GuidelineConfig $config = new GuidelineConfig)
+    /** @var GuidelineConfig */
+    protected $config;
+
+    public function __construct(Roster $roster, ?GuidelineConfig $config = null)
     {
-        //
+        $this->roster = $roster;
+        $this->config = $config ?? new GuidelineConfig;
     }
 
     protected function getRoster(): Roster

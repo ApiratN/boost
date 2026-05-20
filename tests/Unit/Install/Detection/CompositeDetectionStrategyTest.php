@@ -59,19 +59,19 @@ test('returns false when all strategies fail', function (): void {
     $this->firstStrategy
         ->shouldReceive('detect')
         ->once()
-        ->with(['config' => 'value'], Platform::Linux)
+        ->with(['config' => 'value'], Platform::LINUX)
         ->andReturn(false);
 
     $this->secondStrategy
         ->shouldReceive('detect')
         ->once()
-        ->with(['config' => 'value'], Platform::Linux)
+        ->with(['config' => 'value'], Platform::LINUX)
         ->andReturn(false);
 
     $this->thirdStrategy
         ->shouldReceive('detect')
         ->once()
-        ->with(['config' => 'value'], Platform::Linux)
+        ->with(['config' => 'value'], Platform::LINUX)
         ->andReturn(false);
 
     $composite = new CompositeDetectionStrategy([
@@ -80,7 +80,7 @@ test('returns false when all strategies fail', function (): void {
         $this->thirdStrategy,
     ]);
 
-    $result = $composite->detect(['config' => 'value'], Platform::Linux);
+    $result = $composite->detect(['config' => 'value'], Platform::LINUX);
 
     expect($result)->toBeFalse();
 });
@@ -89,13 +89,13 @@ test('stops execution after first success', function (): void {
     $this->firstStrategy
         ->shouldReceive('detect')
         ->once()
-        ->with(['paths' => ['test']], Platform::Darwin)
+        ->with(['paths' => ['test']], Platform::DARWIN)
         ->andReturn(false);
 
     $this->secondStrategy
         ->shouldReceive('detect')
         ->once()
-        ->with(['paths' => ['test']], Platform::Darwin)
+        ->with(['paths' => ['test']], Platform::DARWIN)
         ->andReturn(true);
 
     $this->thirdStrategy
@@ -107,7 +107,7 @@ test('stops execution after first success', function (): void {
         $this->thirdStrategy,
     ]);
 
-    $result = $composite->detect(['paths' => ['test']], Platform::Darwin);
+    $result = $composite->detect(['paths' => ['test']], Platform::DARWIN);
 
     expect($result)->toBeTrue();
 });
@@ -140,13 +140,13 @@ test('passes platform parameter to all strategies', function (): void {
     $this->firstStrategy
         ->shouldReceive('detect')
         ->once()
-        ->with(['config' => 'test'], Platform::Windows)
+        ->with(['config' => 'test'], Platform::WINDOWS)
         ->andReturn(false);
 
     $this->secondStrategy
         ->shouldReceive('detect')
         ->once()
-        ->with(['config' => 'test'], Platform::Windows)
+        ->with(['config' => 'test'], Platform::WINDOWS)
         ->andReturn(false);
 
     $composite = new CompositeDetectionStrategy([
@@ -154,7 +154,7 @@ test('passes platform parameter to all strategies', function (): void {
         $this->secondStrategy,
     ]);
 
-    $result = $composite->detect(['config' => 'test'], Platform::Windows);
+    $result = $composite->detect(['config' => 'test'], Platform::WINDOWS);
 
     expect($result)->toBeFalse();
 });

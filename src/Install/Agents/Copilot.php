@@ -21,27 +21,32 @@ class Copilot extends Agent implements SupportsGuidelines, SupportsMcp, Supports
         return 'GitHub Copilot';
     }
 
-    public function detectOnSystem(Platform $platform): bool
+    public function detectOnSystem(string $platform): bool
     {
         return false;
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
-        return match ($platform) {
-            Platform::Darwin => [
-                'paths' => ['/Applications/Visual Studio Code.app'],
-            ],
-            Platform::Linux => [
-                'command' => 'command -v code',
-            ],
-            Platform::Windows => [
-                'paths' => [
-                    '%ProgramFiles%\\Microsoft VS Code',
-                    '%LOCALAPPDATA%\\Programs\\Microsoft VS Code',
-                ],
-            ],
-        };
+        switch ($platform) {
+            case Platform::DARWIN:
+                return [
+                    'paths' => ['/Applications/Visual Studio Code.app'],
+                ];
+            case Platform::LINUX:
+                return [
+                    'command' => 'command -v code',
+                ];
+            case Platform::WINDOWS:
+                return [
+                    'paths' => [
+                        '%ProgramFiles%\\Microsoft VS Code',
+                        '%LOCALAPPDATA%\\Programs\\Microsoft VS Code',
+                    ],
+                ];
+            default:
+                return [];
+        }
     }
 
     public function projectDetectionConfig(): array

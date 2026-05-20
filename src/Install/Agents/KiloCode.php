@@ -22,16 +22,21 @@ class KiloCode extends Agent implements SupportsGuidelines, SupportsMcp, Support
         return 'Kilo Code';
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
-        return match ($platform) {
-            Platform::Darwin, Platform::Linux => [
-                'command' => 'command -v kilo-code 2>/dev/null',
-            ],
-            Platform::Windows => [
-                'command' => 'where kilo-code 2>nul',
-            ],
-        };
+        switch ($platform) {
+            case Platform::DARWIN:
+            case Platform::LINUX:
+                return [
+                    'command' => 'command -v kilo-code 2>/dev/null',
+                ];
+            case Platform::WINDOWS:
+                return [
+                    'command' => 'where kilo-code 2>nul',
+                ];
+            default:
+                return [];
+        }
     }
 
     public function projectDetectionConfig(): array
@@ -42,7 +47,7 @@ class KiloCode extends Agent implements SupportsGuidelines, SupportsMcp, Support
         ];
     }
 
-    public function mcpInstallationStrategy(): McpInstallationStrategy
+    public function mcpInstallationStrategy(): string
     {
         return McpInstallationStrategy::FILE;
     }

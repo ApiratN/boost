@@ -33,7 +33,7 @@ class TestAgent extends Agent
         return 'Test Environment';
     }
 
-    public function systemDetectionConfig(Platform $platform): array
+    public function systemDetectionConfig(string $platform): array
     {
         return ['paths' => ['/test/path']];
     }
@@ -61,7 +61,7 @@ class TestSupportsMcp extends TestAgent implements SupportsMcp
 }
 
 test('detectOnSystem delegates to strategy factory and detection strategy', function (): void {
-    $platform = Platform::Darwin;
+    $platform = Platform::DARWIN;
     $config = ['paths' => ['/test/path']];
 
     $this->strategyFactory
