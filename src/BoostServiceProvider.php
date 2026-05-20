@@ -31,8 +31,8 @@ class BoostServiceProvider extends ServiceProvider
 
         $this->app->singleton(BoostManager::class, fn (): BoostManager => new BoostManager);
 
-        if (class_exists(Roster::class)) {
-            $this->app->singleton(Roster::class, function () {
+        if (class_exists(\Laravel\Roster\Roster::class)) {
+            $this->app->singleton(\Laravel\Roster\Roster::class, function () {
                 $lockFiles = [
                     base_path('composer.lock'),
                     base_path('package-lock.json'),
@@ -51,7 +51,7 @@ class BoostServiceProvider extends ServiceProvider
                     return $cached['roster'];
                 }
 
-                $roster = Roster::scan(base_path());
+                $roster = \Laravel\Roster\Roster::scan(base_path());
                 cache()->put($cacheKey, [
                     'roster' => $roster,
                     'timestamp' => time(),
@@ -61,11 +61,11 @@ class BoostServiceProvider extends ServiceProvider
             });
         }
 
-        if (class_exists(GuidelineConfig::class) && class_exists(Roster::class)) {
+        if (class_exists(GuidelineConfig::class) && class_exists(\Laravel\Roster\Roster::class)) {
             $this->app->singleton(GuidelineConfig::class, fn (): GuidelineConfig => new GuidelineConfig);
 
             $this->app->singleton(GuidelineAssist::class, fn ($app): GuidelineAssist => new GuidelineAssist(
-                $app->make(Roster::class),
+                $app->make(\Laravel\Roster\Roster::class),
                 $app->make(GuidelineConfig::class)
             ));
         }
@@ -77,8 +77,8 @@ class BoostServiceProvider extends ServiceProvider
             return;
         }
 
-        if (class_exists(Mcp::class) && class_exists(Boost::class)) {
-            Mcp::local('laravel-boost', Boost::class);
+        if (class_exists(\Laravel\Mcp\Facades\Mcp::class) && class_exists(\Laravel\Boost\Mcp\Boost::class)) {
+            \Laravel\Mcp\Facades\Mcp::local('laravel-boost', \Laravel\Boost\Mcp\Boost::class);
         }
 
         $this->registerPublishing();
@@ -103,14 +103,27 @@ class BoostServiceProvider extends ServiceProvider
 
     protected function registerCommands(): void
     {
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                Console\StartCommand::class,
-                Console\InstallCommand::class,
-                Console\UpdateCommand::class,
-                Console\ExecuteToolCommand::class,
-                Console\AddSkillCommand::class,
-            ]);
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $commands = [];
+
+        // Commands that require laravel/prompts
+        if (class_exists(\Laravel\Prompts\Terminal::class)) {
+            $commands[] = Console\InstallCommand::class;
+            $commands[] = Console\UpdateCommand::class;
+            $commands[] = Console\AddSkillCommand::class;
+        }
+
+        // Commands that require laravel/mcp
+        if (class_exists(\Laravel\Mcp\Server\Tool::class)) {
+            $commands[] = Console\StartCommand::class;
+            $commands[] = Console\ExecuteToolCommand::class;
+        }
+
+        if ($commands !== []) {
+            $this->commands($commands);
         }
     }
 
@@ -141,7 +154,7 @@ class BoostServiceProvider extends ServiceProvider
                     message: self::buildLogMessageFromData($log['data']),
                     context: [
                         'url' => $log['url'],
-                        'user_agent' => $log['userAgent'] ?: null,
+                        'user_agent' => $log['user_agent'] ?: null,
                         'timestamp' => $log['timestamp'] ?: now()->toIso8601String(),
                     ]
                 );

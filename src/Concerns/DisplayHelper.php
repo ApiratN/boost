@@ -5,14 +5,9 @@ declare(strict_types=1);
 namespace Laravel\Boost\Concerns;
 
 use Laravel\Boost\Console\Enums\Theme;
-use Laravel\Prompts\Concerns\Colors;
-
-use function Laravel\Prompts\note;
 
 trait DisplayHelper
 {
-    use Colors;
-
     protected ?string $theme = null;
 
     protected function initTheme(?string $theme = null): void
@@ -59,7 +54,8 @@ trait DisplayHelper
 
     protected function displayNote(string $projectName): void
     {
-        note("Let's give {$this->displayBadge($projectName)} a Boost");
+        $text = "Let's give {$this->displayBadge($projectName)} a Boost";
+        $this->output->writeln($text);
     }
 
     protected function displayOutro(string $text, string $link = '', int $terminalWidth = 80): void

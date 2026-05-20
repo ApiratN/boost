@@ -1,0 +1,16 @@
+{
+  "2026-05-19": {
+    "input": 418708,
+    "output": 14526,
+    "cache_write": 0,
+    "cache_read": 10974976,
+    "requests": 5
+  },
+  "2026-05-20": {
+    "input": 34072,
+    "output": 6447,
+    "cache_write": 0,
+    "cache_read": 498432,
+    "requests": 5
+  }
+}
