@@ -14,10 +14,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Compilers\BladeCompiler;
 use Laravel\Boost\Install\GuidelineAssist;
 use Laravel\Boost\Install\GuidelineConfig;
-use Laravel\Boost\Mcp\Boost;
 use Laravel\Boost\Middleware\InjectBoost;
-use Laravel\Mcp\Facades\Mcp;
-use Laravel\Roster\Roster;
 
 class BoostServiceProvider extends ServiceProvider
 {
@@ -34,40 +31,44 @@ class BoostServiceProvider extends ServiceProvider
 
         $this->app->singleton(BoostManager::class, fn (): BoostManager => new BoostManager);
 
-        $this->app->singleton(Roster::class, function () {
-            $lockFiles = [
-                base_path('composer.lock'),
-                base_path('package-lock.json'),
-                base_path('bun.lock'),
-                base_path('bun.lockb'),
-                base_path('pnpm-lock.yaml'),
-                base_path('yarn.lock'),
-            ];
+        if (class_exists(Roster::class)) {
+            $this->app->singleton(Roster::class, function () {
+                $lockFiles = [
+                    base_path('composer.lock'),
+                    base_path('package-lock.json'),
+                    base_path('bun.lock'),
+                    base_path('bun.lockb'),
+                    base_path('pnpm-lock.yaml'),
+                    base_path('yarn.lock'),
+                ];
 
-            $cacheKey = 'boost.roster.scan';
-            $lastModified = max(array_map(fn (string $path): int|false => file_exists($path) ? filemtime($path) : 0, $lockFiles));
+                $cacheKey = 'boost.roster.scan';
+                $lastModified = max(array_map(fn (string $path): int|false => file_exists($path) ? filemtime($path) : 0, $lockFiles));
 
-            $cached = cache()->get($cacheKey);
+                $cached = cache()->get($cacheKey);
 
-            if ($cached && isset($cached['timestamp']) && $cached['timestamp'] >= $lastModified) {
-                return $cached['roster'];
-            }
+                if ($cached && isset($cached['timestamp']) && $cached['timestamp'] >= $lastModified) {
+                    return $cached['roster'];
+                }
 
-            $roster = Roster::scan(base_path());
-            cache()->put($cacheKey, [
-                'roster' => $roster,
-                'timestamp' => time(),
-            ], now()->addHours(24));
+                $roster = Roster::scan(base_path());
+                cache()->put($cacheKey, [
+                    'roster' => $roster,
+                    'timestamp' => time(),
+                ], now()->addHours(24));
 
-            return $roster;
-        });
+                return $roster;
+            });
+        }
 
-        $this->app->singleton(GuidelineConfig::class, fn (): GuidelineConfig => new GuidelineConfig);
+        if (class_exists(GuidelineConfig::class) && class_exists(Roster::class)) {
+            $this->app->singleton(GuidelineConfig::class, fn (): GuidelineConfig => new GuidelineConfig);
 
-        $this->app->singleton(GuidelineAssist::class, fn ($app): GuidelineAssist => new GuidelineAssist(
-            $app->make(Roster::class),
-            $app->make(GuidelineConfig::class)
-        ));
+            $this->app->singleton(GuidelineAssist::class, fn ($app): GuidelineAssist => new GuidelineAssist(
+                $app->make(Roster::class),
+                $app->make(GuidelineConfig::class)
+            ));
+        }
     }
 
     public function boot(Router $router): void
@@ -76,7 +77,9 @@ class BoostServiceProvider extends ServiceProvider
             return;
         }
 
-        Mcp::local('laravel-boost', Boost::class);
+        if (class_exists(Mcp::class) && class_exists(Boost::class)) {
+            Mcp::local('laravel-boost', Boost::class);
+        }
 
         $this->registerPublishing();
         $this->registerCommands();
